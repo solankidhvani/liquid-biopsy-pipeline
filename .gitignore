@@ -1,0 +1,29 @@
+# Nextflow
+work/
+.nextflow/
+.nextflow.log*
+
+# Raw and large reference data (too big for git, users download their own)
+data/raw/*.fastq
+data/raw/*.fastq.gz
+data/reference/*.fa
+data/reference/*.fa.fai
+data/reference/*.gtf
+
+# Large intermediate results (keep plots/CSV, drop bulky indices)
+data/results/salmon_index/
+data/results/fastp/*/*.json
+data/results/fastp/*/*.html
+
+# System files
+.DS_Store
+
+# Fastp trimmed reads (regenerable, large)
+data/results/fastp/*/*.fastq
+
+# Salmon quant auxiliary output (keep only quant.sf itself)
+data/results/salmon_quant/*/aux_info/
+data/results/salmon_quant/*/libParams/
+data/results/salmon_quant/*/logs/
+data/results/salmon_quant/*/cmd_info.json
+data/results/salmon_quant/*/lib_format_counts.json

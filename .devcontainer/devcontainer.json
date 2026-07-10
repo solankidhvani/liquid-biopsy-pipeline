@@ -1,0 +1,13 @@
+{
+  "name": "liquid-biopsy-pipeline",
+  "image": "mcr.microsoft.com/devcontainers/miniconda:0-3",
+  "postCreateCommand": "conda config --add channels bioconda && conda config --add channels conda-forge && conda create -n pipeline -y fastp salmon nextflow r-base bioconductor-deseq2 r-ggplot2 r-pheatmap bioconductor-tximport gffread r-optparse && echo 'conda activate pipeline' >> ~/.bashrc",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "nextflow.nextflow",
+        "reditorsupport.r"
+      ]
+    }
+  }
+}

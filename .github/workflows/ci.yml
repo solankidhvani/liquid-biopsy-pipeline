@@ -1,0 +1,36 @@
+name: Pipeline CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: pipeline
+          channels: bioconda,conda-forge
+
+      - name: Install tools
+        run: conda install -y fastp salmon nextflow r-base bioconductor-deseq2 r-ggplot2 r-pheatmap bioconductor-tximport gffread r-optparse
+
+      - name: Build Docker image
+        run: docker build -t liquid-biopsy-pipeline .
+
+      - name: Run full pipeline on chr22 test data
+        run: docker run -v ${{ github.workspace }}/data:/pipeline/data liquid-biopsy-pipeline
+
+      - name: Verify outputs exist
+        run: |
+          test -f data/results/deseq2_results.csv
+          test -f data/results/volcano_plot.pdf
+          test -f data/results/pca_plot.pdf
+          test -f data/results/heatmap.pdf
+          echo "All expected outputs present."
