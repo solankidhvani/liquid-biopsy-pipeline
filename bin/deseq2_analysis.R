@@ -40,7 +40,7 @@ p_volcano <- ggplot(res_df, aes(x = log2FoldChange, y = -log10(pvalue), color = 
   theme_minimal() +
   labs(title = "Volcano Plot", x = "log2 Fold Change", y = "-log10(p-value)")
 ggsave(file.path(opt$outdir, "volcano_plot.pdf"), p_volcano, width = 6, height = 5)
-
+ggsave(file.path(opt$outdir, "volcano_plot.png"), p_volcano, width = 6, height = 5, dpi = 150)
 vsd <- vst(dds, blind = TRUE)
 pca_data <- plotPCA(vsd, intgroup = "condition", returnData = TRUE)
 p_pca <- ggplot(pca_data, aes(PC1, PC2, color = condition)) +
@@ -48,8 +48,14 @@ p_pca <- ggplot(pca_data, aes(PC1, PC2, color = condition)) +
   theme_minimal() +
   labs(title = "PCA Plot")
 ggsave(file.path(opt$outdir, "pca_plot.pdf"), p_pca, width = 6, height = 5)
+ggsave(file.path(opt$outdir, "pca_plot.png"), p_pca, width = 6, height = 5, dpi = 150)
+
 
 top_genes <- head(order(rowVars(assay(vsd)), decreasing = TRUE), 30)
 pdf(file.path(opt$outdir, "heatmap.pdf"), width = 6, height = 8)
+pheatmap(assay(vsd)[top_genes, ], annotation_col = samples[, "condition", drop = FALSE])
+dev.off()
+
+png(file.path(opt$outdir, "heatmap.png"), width = 6, height = 8, units = "in", res = 150)
 pheatmap(assay(vsd)[top_genes, ], annotation_col = samples[, "condition", drop = FALSE])
 dev.off()

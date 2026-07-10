@@ -79,15 +79,16 @@ Full results: [`data/results/deseq2_results.csv`](data/results/deseq2_results.cs
 
 **Volcano plot** — significant transcripts (padj < 0.05, |log2FC| > 1) highlighted:
 
-![Volcano plot](data/results/volcano_plot.pdf)
 
+![Volcano plot](data/results/volcano_plot.png)
 **PCA plot** — samples cleanly separate by condition:
 
-![PCA plot](data/results/pca_plot.pdf)
 
+![PCA plot](data/results/pca_plot.png)
 **Heatmap** — top 30 most variable transcripts across samples:
 
-![Heatmap](data/results/heatmap.pdf)
+
+![Heatmap](data/results/heatmap.png)
 
 > Note: GitHub doesn't render PDFs inline in Markdown previews. See the files directly in [`data/results/`](data/results/), or convert to PNG for inline preview.
 
