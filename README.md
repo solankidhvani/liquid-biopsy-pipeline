@@ -81,10 +81,12 @@ Full results: [`data/results/deseq2_results.csv`](data/results/deseq2_results.cs
 
 
 ![Volcano plot](data/results/volcano_plot.png)
+
 **PCA plot** — samples cleanly separate by condition:
 
 
 ![PCA plot](data/results/pca_plot.png)
+
 **Heatmap** — top 30 most variable transcripts across samples:
 
 
