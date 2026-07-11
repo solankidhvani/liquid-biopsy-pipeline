@@ -27,7 +27,7 @@ files <- files[samples$sample]
 txi <- tximport(files, type = "salmon", txOut = TRUE, dropInfReps = TRUE)
 
 dds <- DESeqDataSetFromTximport(txi, colData = samples, design = ~condition)
-dds <- DESeq(dds)
+dds <- DESeq(dds, fitType = "mean")
 res <- results(dds)
 res_df <- as.data.frame(res)
 res_df$gene <- rownames(res_df)
@@ -41,7 +41,12 @@ p_volcano <- ggplot(res_df, aes(x = log2FoldChange, y = -log10(pvalue), color = 
   labs(title = "Volcano Plot", x = "log2 Fold Change", y = "-log10(p-value)")
 ggsave(file.path(opt$outdir, "volcano_plot.pdf"), p_volcano, width = 6, height = 5)
 ggsave(file.path(opt$outdir, "volcano_plot.png"), p_volcano, width = 6, height = 5, dpi = 150)
-vsd <- vst(dds, blind = TRUE)
+
+if (nrow(dds) < 1000) {
+  vsd <- varianceStabilizingTransformation(dds, blind = TRUE, fitType = "mean")
+} else {
+  vsd <- vst(dds, blind = TRUE)
+}
 pca_data <- plotPCA(vsd, intgroup = "condition", returnData = TRUE)
 p_pca <- ggplot(pca_data, aes(PC1, PC2, color = condition)) +
   geom_point(size = 3) +
