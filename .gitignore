@@ -28,3 +28,4 @@ data/results/salmon_quant/*/logs/
 data/results/salmon_quant/*/cmd_info.json
 data/results/salmon_quant/*/lib_format_counts.json
 tests/ci_results/
+db/*.db

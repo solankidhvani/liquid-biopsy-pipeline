@@ -36,3 +36,4 @@ workflow {
 
     DESEQ2(quant_dirs_ch, samplesheet_ch)
 }
+

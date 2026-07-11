@@ -9,4 +9,4 @@ SHELL ["conda", "run", "-n", "pipeline", "/bin/bash", "-c"]
 WORKDIR /pipeline
 COPY . .
 
-ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "pipeline", "nextflow", "run", "main.nf"]
+ENTRYPOINT ["./run_pipeline.sh"]
