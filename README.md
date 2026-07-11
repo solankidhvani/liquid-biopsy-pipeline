@@ -110,6 +110,11 @@ Full results: [`data/results/deseq2_results.csv`](data/results/deseq2_results.cs
 │   └── deseq2_analysis.R             # DESeq2 + visualization script
 ├── nextflow.config                   # resource profiles (standard, ci)
 ├── Dockerfile
+├── db/
+│   └── schema.sql                    # SQLite schema for run/sample tracking
+├── scripts/
+│   └── log_run_to_db.py              # auto-logs each pipeline run to db/pipeline_runs.db
+├── platform-admin/                   # disk monitoring, log rotation, cron scheduling
 └── data/
     ├── raw/                          # input FASTQ (not committed — download fresh)
     ├── reference/                    # genome/GTF/transcriptome (not committed)
@@ -124,6 +129,11 @@ Full results: [`data/results/deseq2_results.csv`](data/results/deseq2_results.cs
 3. Update `data/samplesheet.csv` with `sample,condition` rows matching your sample names
 4. Run as above — public liquid biopsy / plasma RNA-seq data can be sourced from [NCBI GEO](https://www.ncbi.nlm.nih.gov/geo/) or [SRA](https://www.ncbi.nlm.nih.gov/sra)
 
+## Run tracking & platform administration
+
+Every pipeline run is automatically logged to a local SQLite database (`db/pipeline_runs.db`) via `run_pipeline.sh`, capturing per-sample QC status, read retention, and the git commit used — useful for auditing runs across collaborators or over time. See `db/schema.sql` for the schema.
+
+The `platform-admin/` directory contains operational tooling for running this as a persistent service rather than a one-off analysis: disk usage monitoring, log rotation, and cron scheduling. See [`platform-admin/README.md`](platform-admin/README.md) for details.
 
 ## Debugging notes / lessons learned
 
