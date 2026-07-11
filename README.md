@@ -1,5 +1,7 @@
 # Liquid Biopsy / RNA-seq Mini Pipeline
 
+![CI](https://github.com/solankidhvani/liquid-biopsy-pipeline/actions/workflows/ci.yml/badge.svg)
+
 An end-to-end, reproducible pipeline for processing RNA-seq / liquid biopsy small-RNA data:
 **QC & adapter trimming (fastp) → pseudo-alignment (Salmon) → differential expression & visualization (DESeq2, ggplot2, pheatmap in R)**.
 
@@ -92,7 +94,6 @@ Full results: [`data/results/deseq2_results.csv`](data/results/deseq2_results.cs
 
 ![Heatmap](data/results/heatmap.png)
 
-> Note: GitHub doesn't render PDFs inline in Markdown previews. See the files directly in [`data/results/`](data/results/), or convert to PNG for inline preview.
 
 ## Repo structure
 
@@ -122,6 +123,20 @@ Full results: [`data/results/deseq2_results.csv`](data/results/deseq2_results.cs
 2. Add your transcriptome FASTA to `data/reference/transcriptome.fa`
 3. Update `data/samplesheet.csv` with `sample,condition` rows matching your sample names
 4. Run as above — public liquid biopsy / plasma RNA-seq data can be sourced from [NCBI GEO](https://www.ncbi.nlm.nih.gov/geo/) or [SRA](https://www.ncbi.nlm.nih.gov/sra)
+
+
+## Debugging notes / lessons learned
+
+A few non-obvious issues surfaced while building this pipeline, worth noting for anyone extending it:
+
+- **Nextflow `path` inputs need explicit `file()`/`Channel.fromPath()` wrapping** — passing a raw string param into a `path`-typed process input fails with `Not a valid path value` in recent Nextflow versions rather than implicitly converting.
+- **`publishDir` + an already-named output directory can double-nest paths** — if a process emits `path "${sample_id}"` and `publishDir` also appends `${sample_id}`, results land at `outdir/sample_id/sample_id/` instead of `outdir/sample_id/`.
+- **R's `file.path()` drops names from a named vector** — reattaching names after path construction (rather than assuming they persist) avoids silent `NA`-filled file lists that only surface as a downstream `file.exists()` failure.
+- **`tximport` needs `dropInfReps = TRUE`** to avoid requiring the `jsonlite` package for Salmon's inferential replicate metadata, which isn't needed for a standard DESeq2 workflow.
+- **`pheatmap`'s `annotation_col` requires row names matching the expression matrix's column names** — a samplesheet loaded via `read.csv()` needs `rownames()` set explicitly to the sample ID column.
+- **DESeq2's default dispersion/VST curve-fitting needs a reasonably large gene set** — with very few genes (e.g. a small CI smoke-test fixture), both `DESeq()` and `vst()`/`varianceStabilizingTransformation()` need `fitType = "mean"` to avoid `locfit` failing with "out of vertex space", and `vst()` itself needs falling back to `varianceStabilizingTransformation()` below ~1000 genes.
+
+
 
 ## License
 
